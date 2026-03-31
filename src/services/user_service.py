@@ -30,12 +30,13 @@ def create_user(db: Session, user_in: UserCreate):
         return user
     except IntegrityError as e:
         db.rollback()
-        if "ix_users_username_ci" in str(e.orig):
+        orig_msg = str(e.orig).lower()
+        if "ix_users_username_ci" in orig_msg or "users.username" in orig_msg:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail={"error": {"code": "USERNAME_TAKEN", "message": "Username already exists."}},
             )
-        if "users_email_key" in str(e.orig):
+        if "users_email_key" in orig_msg or "users.email" in orig_msg:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail={"error": {"code": "EMAIL_TAKEN", "message": "Email already exists."}},

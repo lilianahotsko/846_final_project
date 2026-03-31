@@ -10,5 +10,4 @@ class Post(Base):
 
     __table_args__ = (
         Index("ix_posts_created_at_desc", created_at.desc()),
-        Index("ix_posts_user_id", user_id),
     )
